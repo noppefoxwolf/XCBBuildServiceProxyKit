@@ -89,7 +89,7 @@ final class BazelBuild {
         
         self.buildContext = buildContext
 
-        switch buildRequest.buildCommand {
+        switch buildRequest.buildCommand.command {
         case .cleanBuildFolder:
             self.buildProcess = CleanBuildFolderProcess(
                 buildProductsPath: buildRequest.parameters.arenaInfo.buildProductsPath,
@@ -114,7 +114,7 @@ final class BazelBuild {
     /// - Returns: `true` if the target shouldn't be build for the `buildRequest`.
     ///   e.g. test targets are set in Xcode 11.3 for SwiftUI previews, even though we don't need to build them.
     static func shouldSkipTarget(_ target: Target, buildRequest: BuildRequest) -> Bool {
-        guard buildRequest.buildCommand == .preview else { return false }
+        guard buildRequest.buildCommand.command == .preview else { return false }
 
         return target.name.hasSuffix("Testing")
             || target.name == "TestingCore"
@@ -810,7 +810,8 @@ private extension BuildOperationProjectInfo {
         self.init(
             name: parsedProject.name,
             path: parsedProject.path,
-            isPackage: parsedProject.isPackage
+            isPackage: parsedProject.isPackage,
+            isNameUniqueInWorkspace: true //FIXME: This is not correct
         )
     }
 }
@@ -932,7 +933,7 @@ private extension BuildPlatform {
     }
 }
 
-private extension SDKVariant {
+private extension String {
     private static let regex = try! NSRegularExpression(pattern: #"^(\D+)(\d+\.\d+)$"#)
     
     // e.g. "iphonesimulator13.2" -> "iPhoneSimulator13.2.sdk"
@@ -940,20 +941,20 @@ private extension SDKVariant {
         // TODO: Figure this out better
         guard
             let match = Self.regex.firstMatch(
-                in: rawValue,
+                in: self,
                 options: [],
-                range: NSRange(rawValue.startIndex ..< rawValue.endIndex, in: rawValue)
+                range: NSRange(self.startIndex ..< self.endIndex, in: self)
             ),
             match.numberOfRanges == 3,
-            let nameRange = Range(match.range(at: 1), in: rawValue),
-            let versionRange = Range(match.range(at: 2), in: rawValue),
-            let platform = BuildPlatform(rawValue: String(rawValue[nameRange]))
+            let nameRange = Range(match.range(at: 1), in: self),
+            let versionRange = Range(match.range(at: 2), in: self),
+            let platform = BuildPlatform(rawValue: String(self[nameRange]))
         else {
-            logger.error("Unknown platform used for SDKVariant: \(rawValue)")
+            logger.error("Unknown platform used for SDKVariant: \(self)")
             return "Unknown.sdk"
         }
 
-        return "\(platform.stylizedForDirectoryName)\(rawValue[versionRange]).sdk"
+        return "\(platform.stylizedForDirectoryName)\(self[versionRange]).sdk"
     }
 }
 

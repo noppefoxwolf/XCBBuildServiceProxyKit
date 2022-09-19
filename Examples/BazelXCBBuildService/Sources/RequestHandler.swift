@@ -4,9 +4,9 @@ import NIO
 import XCBBuildServiceProxyKit
 import XCBProtocol
 
-@_exported import XCBProtocol_12_0
-typealias BazelXCBBuildServiceRequestPayload = XCBProtocol_12_0.RequestPayload
-typealias BazelXCBBuildServiceResponsePayload = XCBProtocol_12_0.ResponsePayload
+@_exported import XCBProtocol_13_3
+typealias BazelXCBBuildServiceRequestPayload = XCBProtocol_13_3.RequestPayload
+typealias BazelXCBBuildServiceResponsePayload = XCBProtocol_13_3.ResponsePayload
 
 final class RequestHandler: HybridXCBBuildServiceRequestHandler {
     typealias Context = HybridXCBBuildServiceRequestHandlerContext<BazelXCBBuildServiceRequestPayload, BazelXCBBuildServiceResponsePayload>

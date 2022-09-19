@@ -21,7 +21,7 @@ swift_library(
         "@com_github_apple_swift_nio//:NIO",
         "@com_github_mobilenativefoundation_xcbbuildserviceproxykit//:XCBBuildServiceProxyKit",
         "@com_github_mobilenativefoundation_xcbbuildserviceproxykit//:XCBProtocol",
-        "@com_github_mobilenativefoundation_xcbbuildserviceproxykit//:XCBProtocol_12_0",
+        "@com_github_mobilenativefoundation_xcbbuildserviceproxykit//:XCBProtocol_13_3",
     ],
 )
 
